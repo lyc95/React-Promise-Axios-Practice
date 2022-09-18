@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>axios基本使用</title>
+    <!-- JavaScript Bundle with Popper -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-header">基本使用</h2>
+        <button class="btn btn-primary"> 发送GET请求 </button>
+        <button class="btn btn-warning" > 发送POST请求 </button>
+        <button class="btn btn-success"> 发送 PUT 请求 </button>
+        <button class="btn btn-danger"> 发送 DELETE 请求 </button>
+    </div>
+    <script>
+        const btns = document.querySelectorAll('button')
+        //get request
+        // btns[0].onclick = function(){
+        //     axios.request({
+        //         method: 'GET',
+        //         url:'http://localhost:3000/comments'
+        //     }).then(res => console.log(res))
+        // }
+        // //post request
+        // btns[1].onclick = function(){
+        //     axios.post(
+        //         'http://localhost:3000/comments',
+        //         {
+        //             body: "happy",
+        //             postId: 2
+        //         })
+        //         .then(res => console.log(res))
+        // }
+
+        // //axios default setting
+
+        // axios.defaults.baseURL = 'https://api.example.com';
+        // // Important: If axios is used with multiple domains, the AUTH_TOKEN will be sent to all of them.
+        // // See below for an example using Custom instance defaults instead.
+        // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+        // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+        // axios.defaults.params={id:100}// will add xxxxx?id=100 in the url
+
+        // create instance object
+        // const duanzi = axios.create({
+        //     baseURL:'https://api.a.com',
+        //     timeout:3000
+        // })
+        // const duanzi_diff = axios.create({
+        //     baseURL:'https://api.b.com',
+        //     timeout:3000
+        // })
+        // //duanzi here is nearly same as axios objecy
+        // console.log(duanzi)
+        // //make a request based on duanzi object
+        // //no need to add base url again here
+        // //you can choose which url you want to send to by calling according axios object
+        // duanzi({
+        //     url:'/getjokes'
+        // }).then(res => console.log(res))
+        // duanzi.gte('/getjokes').then(res => console.log(res.data))
+
+
+        // Add a request interceptor
+        axios.interceptors.request.use(function (config) {
+            console.log('request ok')
+            //如果这个抛出错误或给一个reject的promise
+
+            return config;
+        }, function (error) {
+            console.log('request fail')
+            return Promise.reject(error);
+        });
+
+        // Add a response interceptor
+        // axios.interceptors.response.use(function (response) {
+        //     // Any status code that lie within the range of 2xx cause this function to trigger
+        //     // Do something with response data
+        //     console.log('response ok')
+        //     return response;
+        // }, function (error) {
+        //     // Any status codes that falls outside the range of 2xx cause this function to trigger
+        //     // Do something with response error
+        //     console.log('reponse fail')
+        //     return Promise.reject(error);
+        // });
+        // axios({
+        //         method: 'GET',
+        //         url:'http://localhost:3000/posts'
+        //     }).then(res => console.log(res))
+
+        //request interceptors behave like stack, 后进先执行
+            //可以对config配置文件对象进行处理，修改等
+        //response interceptirs behave like queue , 先进先执行
+            //可以对response object进行处理并返回不同的值 例如只返回response.data
+        
+
+        const controller = new AbortController();
+        axios.get('http://localhost:3000/posts', {
+            signal: controller.signal
+        }).then(function(response) {
+            console.log("11111")
+        }).catch(
+            console.log("catch error")
+        );
+        // cancel the request
+        controller.abort()
+    </script>
+</body>
+
+</html>

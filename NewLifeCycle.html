@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>New React Life Cycle</title>
+    </head>
+
+<body>
+    <div id="test"></div>
+    <script type="text/javascript" src="./lib/react.development.js"></script>
+    <script type="text/javascript" src="./lib/react-dom.development.js"></script>
+    <script type="text/javascript" src="./lib/babel.js"></script>
+    <script type="text/babel">
+        class Count extends React.Component{
+            constructor(props){
+                console.log("Count----constructor")
+                super(props)
+                this.state = {count : 0}
+            }
+
+            add = ()=>{
+                const {count} = this.state
+                this.setState({count:count + 1})
+            }
+
+            death = ()=>{
+                ReactDOM.unmountComponentAtNode(document.getElementById("test"))
+            }
+            force = ()=>{
+                this.forceUpdate()
+            }
+
+            //新的生命周期函数(will need static)
+            //executed right after constructor for mount and update
+            static getDerivedStateFromProps(props, state){
+                console.log("Count----getDerivedStateFromProps")
+                //must return state obj or null
+                return null
+                //return props (in this case, your state is fully depended on the props)
+                //如果我们的state完全取决于props 才可以使用,不是很常见
+            }
+
+            //新版本或将废弃，现在使用需加前缀UNSAFE_
+            // componentWillMount(){
+            //     console.log("Count --- componentWillMount")
+            // }
+            componentDidMount(){
+                console.log("Count --- componentDidMount")
+            }
+            componentWillUnmount(){
+                console.log("Count --- componentWillUnmount")
+            }
+            shouldComponentUpdate(){
+                console.log("Count --- shouldComponentUpdate")
+            }
+            //新版本或将废弃，现使用需加前缀UNSAFE_
+            // componentWillUpdate(){
+            //     console.log("Count --- componentWillUpdate")
+            // }
+            //3rd parameter came from getSnapshotBeforeUpdate()
+            componentDidUpdate(preProps, preState, snapshotValue){
+                console.log("Count --- componentDidUpdate", preProps, preState)
+            }
+            render(){
+                console.log("Count --- render")
+                const {count} = this.state
+                return (
+                    <div>
+                        <h2>The Current Sum is {count}</h2>
+                        <button onClick={this.add}>+1</button>
+                        <button onClick={this.death}>Un-mount</button>
+                        <button onClick={this.force}>force Update</button>
+                    </div>
+                )
+            }
+
+            //called after render() and before componentDidUpdate()
+            getSnapshotBeforeUpdate(){
+                //must return snapshot(any value) or null
+                // the return value will pass to componentDidUpdate() as a 3rd parameter
+                return null
+            }
+        }
+
+        class A extends React.Component{
+            state = {carName:'Mercedes-Benz'}
+            changeCar = ()=>{
+                this.setState({carName:'BMW'})
+            }
+            render(){
+                return(
+                    <div>
+                        <div>I'm A component</div>
+                        <button onClick = {this.changeCar}>Change the Car</button>
+                        <B carName={this.state.carName}/>
+                    </div>
+                )
+            }
+        }
+        class B extends React.Component {
+            //新版本或将废弃，现在使用需加前缀UNSAFE_
+            // componentWillReceiveProps(props){
+            //     console.log("B --- componentWillReceiveProps", props)
+            // }
+            shouldComponentUpdate(){
+                console.log("B --- shouldComponentUpdate")
+            }
+            componentWillUpdate(){
+                console.log("B --- componentWillUpdate")
+            }
+            componentDidUpdate(){
+                console.log("B --- componentDidUpdate")
+            }
+            render(){
+                console.log('B --- render')
+                return(
+                    <div>
+                        I'm B and the car that i received is {this.props.carName}
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<Count/>, document.getElementById("test"))
+        /*
+            1. Initialization stage, traiggered by ReactDOM.render()
+                1. constructor()
+                2. getDerivedStateFromProps()
+                3. render()
+                4. componentDidMount()   ====>常用，
+                    一般用来做初始化的设置，定时器，网络请求，订阅消息
+            2. Update Stage - triggered by either inernal state updating(this.setState...) or parent Component re-rendering
+                1. getDerivedStateFromProps()
+                2. shouldComponentUpdate()
+                3. render() ==>必用！
+                4. getSnapshotBeforeUpdate()
+                5. componentDidUpdate()
+            3. UnMount Stage- triggered by ReactDOM.unmountComponentAtNode()
+                1. componentWillUnmount() =====>常用，
+                    做一些收尾的事情，关闭定时器，取消订阅
+        */
+    </script>
+</body>
+</html>

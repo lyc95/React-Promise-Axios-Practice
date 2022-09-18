@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>axios基本使用</title>
+    <!-- JavaScript Bundle with Popper -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-header">基本使用</h2>
+        <button class="btn btn-primary"> 发送GET请求 </button>
+        <button class="btn btn-warning" > 发送POST请求 </button>
+        <button class="btn btn-success"> 发送 PUT 请求 </button>
+        <button class="btn btn-danger"> 发送 DELETE 请求 </button>
+    </div>
+    <script>
+        const btns = document.querySelectorAll('button')
+        btns[0].onclick = function(){
+            axios({
+                method: 'GET',
+                url:'http://localhost:3000/posts/2'
+            }).then(res => console.log(res))
+        }
+        btns[1].onclick = function(){
+            axios({
+                method: 'POST',
+                url:'http://localhost:3000/posts',
+                data:{
+                    title: 'Weather is nice',
+                    author:'lyc'
+                }
+            }).then(res => console.log(res))
+        }
+        //update
+        btns[2].onclick = function(){
+            axios({
+                method: 'PUT',
+                url:'http://localhost:3000/posts/3',
+                data:{
+                    title: 'Weather is nice ohhhh',
+                    author:'lyc-updated'
+                }
+            }).then(res => console.log(res))
+        }
+        //update
+        btns[3].onclick = function(){
+            axios({
+                method: 'DELETE',
+                url:'http://localhost:3000/posts/3',
+            }).then(res => console.log(res))
+        }
+    </script>
+</body>
+
+</html>
